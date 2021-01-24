@@ -55,7 +55,7 @@ NODE* newNODE(int info)
     return node;
 }
 
-// --- Edge
+// --- Edge and related functions
 
 typedef struct EDGE {
     NODE *src, *dst;
