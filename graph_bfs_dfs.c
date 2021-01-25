@@ -164,10 +164,10 @@ int initialize(GRAPH* g)
 
 int add_edge(EDGE_QUEUE* q, EDGE* e)
 {
-    if (e->wt > 0 && e->src && e->dst && (e->src->info != e->dst->info))
-        return enqueue_edge(q, e);
-    // else
-    return FAILURE;
+    if (e == NULL)
+        return FAILURE;
+
+    return enqueue_edge(q, e);
 }
 
 // removes and edge from the given queue
@@ -197,6 +197,41 @@ int rem_edge(EDGE_QUEUE* q, int dst_val)
         enqueue_edge(q, dequeue_edge(&tmp_q));
 
     return SUCCESS;
+}
+
+EDGE* get_edge(GRAPH* g)
+{
+    int i, src_val, dst_val, wt;
+    EDGE_QUEUE q;
+    EDGE* e;
+
+    printf("Enter an edge (src, dst and wt): ");
+    scanf("%d %d %d", &src_val, &dst_val, &wt);
+    flush();
+
+    // (vertices out of range) or (same vertex as src & dst) or (invalid weight)
+    if (src_val < 0 || src_val >= g->numOfNodes
+        || dst_val < 0 || dst_val >= g->numOfNodes
+        || src_val == dst_val
+        || wt <= 0) {
+
+        printf("\nInvalid Edge!!\n");
+        return NULL;
+    }
+
+    // edge already exists
+    for (i = 0; i < g->numOfNodes; ++i) {
+        q = g->queues[i];
+        while (!is_empty_edge_queue(&q)) {
+            e = dequeue_edge(&q);
+            if (src_val == value(e->src) && dst_val == value(e->dst)) {
+                printf("\nInvalid Edge!!\n");
+                return NULL;
+            }
+        }
+    }
+
+    return newEDGE(newNODE(src_val), newNODE(dst_val), wt);
 }
 
 void display_edges(GRAPH* g)
@@ -417,11 +452,7 @@ void main(void)
             switch (get_choice()) {
             case '1':
                 clear();
-                printf("Enter an edge (src, dst and wt): ");
-                scanf("%d %d %d", &src_val, &dst_val, &wt);
-                flush();
-                if (add_edge(&(g->queues[src_val]),
-                        newEDGE(newNODE(src_val), newNODE(dst_val), wt)))
+                if (add_edge(&(g->queues[src_val]), get_edge(g)))
                     printf("\nEdge added.");
                 pause();
                 break;
