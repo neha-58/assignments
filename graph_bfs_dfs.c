@@ -12,6 +12,10 @@
 
 #define SUCCESS 1
 #define FAILURE 0
+#define TRUE 1
+#define FALSE 0
+#define WEIGHTED 1
+#define NON_WEIGHTED 0
 
 #define flush() while (getchar() != '\n')
 
@@ -63,13 +67,20 @@ typedef struct EDGE {
     struct EDGE* next;
 } EDGE;
 
-EDGE* newEDGE(NODE* src, NODE* dst, int wt)
+EDGE* newEDGE(int src_val, int dst_val, int wt)
 {
-    EDGE* edge = (EDGE*)malloc(sizeof(EDGE));
-    edge->src = src;
-    edge->dst = dst;
-    edge->wt = wt;
-    return edge;
+    EDGE* e = (EDGE*)malloc(sizeof(EDGE));
+    e->src = newNODE(src_val);
+    e->dst = newNODE(dst_val);
+    e->wt = wt;
+    return e;
+}
+
+void deleteEDGE(EDGE* e)
+{
+    free(e->src);
+    free(e->dst);
+    free(e);
 }
 
 // --- Queue of Edges
@@ -164,10 +175,19 @@ int initialize(GRAPH* g)
 
 int add_edge(EDGE_QUEUE* q, EDGE* e)
 {
-    if (e == NULL)
+    if (e == NULL) {
+        printf("\n\nCan't add edge; edge passed to add_edge() is NULL.\n");
         return FAILURE;
+    }
 
-    return enqueue_edge(q, e);
+    if (enqueue_edge(q, e) == FAILURE) {
+        printf("\n\nCan't add edge: enqueue_edge() failed!\n");
+        return FAILURE;
+    }
+
+    // else
+    printf("\nEdge added.\n");
+    return SUCCESS;
 }
 
 // removes and edge from the given queue
@@ -177,8 +197,10 @@ int rem_edge(EDGE_QUEUE* q, int dst_val)
     EDGE_QUEUE tmp_q = { NULL, NULL };
     EDGE* dequeued;
 
-    if (q == NULL)
+    if (q == NULL) {
         return FAILURE;
+        printf("\n\nInvalid source for edge removal: queue passed is NULL\n\n");
+    }
 
     // dequeue each edge from q and
     // enqueue it into tmp_q if its
@@ -196,52 +218,56 @@ int rem_edge(EDGE_QUEUE* q, int dst_val)
     while (!is_empty_edge_queue(&tmp_q))
         enqueue_edge(q, dequeue_edge(&tmp_q));
 
+    printf("\nEdge removed.\n");
     return SUCCESS;
 }
 
-int exists_edge(GRAPH *g, int src_val, int dst_val) {
+int exists_edge(GRAPH* g, EDGE* e)
+{
     int i;
     EDGE_QUEUE q;
-    EDGE *e;
+    EDGE* __e;
 
     for (i = 0; i < g->numOfNodes; ++i) {
         q = g->queues[i];
         while (!is_empty_edge_queue(&q)) {
-            e = dequeue_edge(&q);
-            if (src_val == value(e->src) && dst_val == value(e->dst)) {
-                return 1;
-            }
+            __e = dequeue_edge(&q);
+            if (value(e->src) == value(__e->src) && value(e->src) == value(__e->dst))
+                return TRUE;
         }
     }
 
-    return 0;
+    return FALSE;
 }
 
-EDGE* get_edge(GRAPH* g)
+EDGE* get_edge(GRAPH* g, int is_weighted)
 {
     int i, src_val, dst_val, wt;
 
-    printf("Enter an edge (src, dst and wt): ");
-    scanf("%d %d %d", &src_val, &dst_val, &wt);
+    printf("\nsrc & dst: ");
+    scanf("%d %d", &src_val, &dst_val);
     flush();
 
-    // (vertices out of range) or (same vertex as src & dst) or (invalid weight)
     if (src_val < 0 || src_val >= g->numOfNodes
         || dst_val < 0 || dst_val >= g->numOfNodes
-        || src_val == dst_val
-        || wt <= 0) {
+        || src_val == dst_val) {
 
         printf("\nInvalid Edge!!\n");
         return NULL;
     }
 
-    // edge already exists
-    if (exists_edge(g, src_val, dst_val)) {
-        printf("\nInvalid Edge!!\n");
-        return NULL;
+    if (is_weighted) {
+        printf("\nweight: ");
+        scanf("%d", &wt);
+        flush();
+        if (wt <= 0) {
+            printf("\nInvalid Weight!!\n");
+            return NULL;
+        }
     }
 
-    return newEDGE(newNODE(src_val), newNODE(dst_val), wt);
+    // else
+    return newEDGE(src_val, dst_val, wt);
 }
 
 void display_edges(GRAPH* g)
@@ -412,20 +438,19 @@ int BFS(GRAPH G, int start_val)
         status[i] = '0';
 
     start_node = newNODE(start_val);
-    
+
     status[value(start_node)] = '1';
-    printf("%d ", value(cur));
-    
+
     enqueue(&Q, start_node);
 
     while (!is_empty_queue(Q)) {
         cur = dequeue(&Q);
+        printf("%d ", value(cur));
         q = G.queues[value(cur)];
         while (!is_empty_edge_queue(&q)) {
             e = dequeue_edge(&q);
             if (status[value(e->dst)] == '0') {
                 status[value(e->dst)] = '1';
-                printf("%d ", value(cur));
                 enqueue(&Q, e->dst);
             }
         }
@@ -443,8 +468,7 @@ void main(void)
 {
     GRAPH* g;
     EDGE* e;
-    int i, n, src_val, dst_val, wt;
-    char* status; // for exploration record of BFS, DFS
+    int i, n;
 
     clear();
 
@@ -468,22 +492,29 @@ void main(void)
             switch (get_choice()) {
             case '1':
                 clear();
-                if (add_edge(&(g->queues[src_val]), get_edge(g)) == SUCCESS)
-                    printf("\nEdge added.");
+                printf("Enter an edge to add\n");
+                e = get_edge(g, WEIGHTED);
+                if (e) {
+                    if (exists_edge(g, e) == TRUE) {
+                        printf("\nEdge already exists!!\n");
+                        deleteEDGE(e);
+                    } else if (add_edge(&(g->queues[value(e->src)]), e) == FAILURE)
+                        deleteEDGE(e);
+                }
                 pause();
                 break;
 
             case '2':
                 clear();
-                printf("Enter an edge to delete(src and dst): ");
-                scanf("%d %d", &src_val, &dst_val);
-                flush();
-                if (!exists_edge(g, src_val, dst_val))
-                    printf("Edge doesn't exist!!");
-                else {
-                    if (rem_edge(&(g->queues[src_val]), dst_val) == SUCCESS)
-                        printf("\nEdge removed.");
+                printf("Enter an edge to delete\n");
+                e = get_edge(g, NON_WEIGHTED);
+                if (e) {
+                    if (exists_edge(g, e) == TRUE)
+                        rem_edge(&(g->queues[value(e->dst)]), value(e->dst));
+                    else
+                        printf("\nEdge doesn't exist!!\n\n");
                 }
+                deleteEDGE(e);
                 pause();
                 break;
 
