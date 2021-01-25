@@ -35,11 +35,12 @@ int entry(Coll c)
 int display(Coll c)
 {
     int i;
-    printf("\n");
+    printf("\nOutput (sorted) \n\n");
     for (i = 0; i < c.count; i++) {
         printf(FORMAT, c.data[i]);
         printf("\n");
     }
+    printf("\n");
 }
 
 typedef struct NODE {
@@ -60,7 +61,7 @@ typedef struct QUEUE {
     NODE *head, *tail;
 } QUEUE;
 
-int is_empty(QUEUE *q) { return q->head == NULL ? 1 : 0; }
+int is_empty(QUEUE* q) { return q->head == NULL ? 1 : 0; }
 
 int enqueue(QUEUE* Q, int data)
 {
@@ -98,10 +99,16 @@ int dequeue(QUEUE* Q)
 int radix_sort(Coll c, int radix)
 {
     int i, j, t, k, largest, dig, exp, bucketIndex;
-    QUEUE buckets[radix]; // to be changed and test allocation
-    for(i = 0; i < radix; ++i)
-        buckets[i].head = buckets[i].tail = NULL;
+    QUEUE* buckets; // to be changed and test allocation
 
+    // allocate buckets
+    buckets = (QUEUE*)malloc(radix * sizeof(QUEUE));
+    if (buckets == NULL)
+        return -1;
+
+    // inititlise buckets
+    for (i = 0; i < radix; ++i)
+        buckets[i].head = buckets[i].tail = NULL;
 
     // find largest
     largest = c.data[0];
