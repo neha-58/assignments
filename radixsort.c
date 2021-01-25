@@ -136,6 +136,7 @@ int radix_sort(Coll c, int radix)
             while (!is_empty(&buckets[j]))
                 c.data[k++] = dequeue(&buckets[j]);
 
+        // next exponent
         exp *= radix;
     }
 
