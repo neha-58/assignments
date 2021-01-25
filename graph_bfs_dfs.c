@@ -199,11 +199,27 @@ int rem_edge(EDGE_QUEUE* q, int dst_val)
     return SUCCESS;
 }
 
+int exists_edge(GRAPH *g, int src_val, int dst_val) {
+    int i;
+    EDGE_QUEUE q;
+    EDGE *e;
+
+    for (i = 0; i < g->numOfNodes; ++i) {
+        q = g->queues[i];
+        while (!is_empty_edge_queue(&q)) {
+            e = dequeue_edge(&q);
+            if (src_val == value(e->src) && dst_val == value(e->dst)) {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
 EDGE* get_edge(GRAPH* g)
 {
     int i, src_val, dst_val, wt;
-    EDGE_QUEUE q;
-    EDGE* e;
 
     printf("Enter an edge (src, dst and wt): ");
     scanf("%d %d %d", &src_val, &dst_val, &wt);
@@ -220,15 +236,9 @@ EDGE* get_edge(GRAPH* g)
     }
 
     // edge already exists
-    for (i = 0; i < g->numOfNodes; ++i) {
-        q = g->queues[i];
-        while (!is_empty_edge_queue(&q)) {
-            e = dequeue_edge(&q);
-            if (src_val == value(e->src) && dst_val == value(e->dst)) {
-                printf("\nInvalid Edge!!\n");
-                return NULL;
-            }
-        }
+    if (exists_edge(g, src_val, dst_val)) {
+        printf("\nInvalid Edge!!\n");
+        return NULL;
     }
 
     return newEDGE(newNODE(src_val), newNODE(dst_val), wt);
@@ -350,7 +360,7 @@ NODE* dequeue(QUEUE* Q)
 
 // --- DFS
 
-char* DFS(GRAPH G, int start_val)
+int DFS(GRAPH G, int start_val)
 {
     int i;
     char* status;
@@ -370,6 +380,7 @@ char* DFS(GRAPH G, int start_val)
         cur = pop(&S);
         if (status[value(cur)] == '0') {
             status[value(cur)] = '1';
+            printf("%d ", value(cur));
             q = G.queues[value(cur)];
             while (!is_empty_edge_queue(&q)) {
                 e = dequeue_edge(&q);
@@ -380,13 +391,14 @@ char* DFS(GRAPH G, int start_val)
     }
 
     free(start_node); // free the extra node created for start_val
+    free(status);
 
-    return status;
+    return SUCCESS;
 }
 
 // --- BFS
 
-char* BFS(GRAPH G, int start_val)
+int BFS(GRAPH G, int start_val)
 {
     int i;
     char* status;
@@ -399,9 +411,11 @@ char* BFS(GRAPH G, int start_val)
     for (i = 0; i < G.numOfNodes; i++)
         status[i] = '0';
 
-    status[start_val] = '1';
-
     start_node = newNODE(start_val);
+    
+    status[value(start_node)] = '1';
+    printf("%d ", value(cur));
+    
     enqueue(&Q, start_node);
 
     while (!is_empty_queue(Q)) {
@@ -411,14 +425,16 @@ char* BFS(GRAPH G, int start_val)
             e = dequeue_edge(&q);
             if (status[value(e->dst)] == '0') {
                 status[value(e->dst)] = '1';
+                printf("%d ", value(cur));
                 enqueue(&Q, e->dst);
             }
         }
     }
 
     free(start_node);
+    free(status);
 
-    return status;
+    return SUCCESS;
 }
 
 // --- Menu
@@ -452,7 +468,7 @@ void main(void)
             switch (get_choice()) {
             case '1':
                 clear();
-                if (add_edge(&(g->queues[src_val]), get_edge(g)))
+                if (add_edge(&(g->queues[src_val]), get_edge(g)) == SUCCESS)
                     printf("\nEdge added.");
                 pause();
                 break;
@@ -462,8 +478,12 @@ void main(void)
                 printf("Enter an edge to delete(src and dst): ");
                 scanf("%d %d", &src_val, &dst_val);
                 flush();
-                if (rem_edge(&(g->queues[src_val]), dst_val))
-                    printf("\nEdge removed.");
+                if (!exists_edge(g, src_val, dst_val))
+                    printf("Edge doesn't exist!!");
+                else {
+                    if (rem_edge(&(g->queues[src_val]), dst_val) == SUCCESS)
+                        printf("\nEdge removed.");
+                }
                 pause();
                 break;
 
@@ -479,14 +499,8 @@ void main(void)
                 printf("\nDFS: Enter starting node: ");
                 scanf("%d", &n);
                 flush();
-                status = DFS(*g, n);
+                DFS(*g, n);
                 printf("\n");
-                for (i = 0; i < g->numOfNodes; i++) {
-                    printf("Node %d is ", i);
-                    printf(status[i] == '1' ? "explored" : "unexplored");
-                    printf("\n");
-                }
-                free(status);
                 pause();
                 break;
 
@@ -495,14 +509,8 @@ void main(void)
                 printf("\nBFS: Enter starting node: ");
                 scanf("%d", &n);
                 flush();
-                status = BFS(*g, n);
+                BFS(*g, n);
                 printf("\n");
-                for (i = 0; i < g->numOfNodes; i++) {
-                    printf("Node %d is ", i);
-                    printf(status[i] == '1' ? "explored" : "unexplored");
-                    printf("\n");
-                }
-                free(status);
                 pause();
                 break;
 
