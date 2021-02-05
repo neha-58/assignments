@@ -1,10 +1,10 @@
-#include "Queue.h"
+#include "AscPriorityQueue.h"
 #include <iostream>
 
 using namespace std;
 
 int main() {
-  Queue q;
+  AscPriorityQueue q;
   q.insert(2);
   q.insert(3);
   q.insert(4);
