@@ -52,7 +52,6 @@ void Queue::display() {
     int length = size();
     LinkedList::moveToStart();
     for (int i = 1; i <= length; i++) {
-
       cout << LinkedList::getValue() << " ";
       LinkedList::next();
     }
