@@ -232,7 +232,7 @@ int exists_edge(GRAPH* g, EDGE* e)
         q = g->queues[i];
         while (!is_empty_edge_queue(&q)) {
             __e = dequeue_edge(&q);
-            if (value(e->src) == value(__e->src) && value(e->src) == value(__e->dst))
+            if (value(e->src) == value(__e->src) && value(e->dst) == value(__e->dst))
                 return TRUE;
         }
     }
@@ -475,6 +475,11 @@ void main(void)
     g = (GRAPH*)malloc(sizeof *g);
     int initialized = initialize(g);
 
+    add_edge(&(g->queues[4]), newEDGE(4, 0, 100));
+    add_edge(&(g->queues[0]), newEDGE(0, 1, 100));
+    add_edge(&(g->queues[1]), newEDGE(1, 8, 100));
+    add_edge(&(g->queues[8]), newEDGE(8, 0, 100));
+
     int done = 0;
     while (!done) // menu loop
     {
@@ -510,7 +515,7 @@ void main(void)
                 e = get_edge(g, NON_WEIGHTED);
                 if (e) {
                     if (exists_edge(g, e) == TRUE)
-                        rem_edge(&(g->queues[value(e->dst)]), value(e->dst));
+                        rem_edge(&(g->queues[value(e->src)]), value(e->dst));
                     else
                         printf("\nEdge doesn't exist!!\n\n");
                 }
