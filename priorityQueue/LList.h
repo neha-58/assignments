@@ -46,7 +46,6 @@ public:
   }
 
   E remove() { // Remove and return current element
-
     E it = curr->next->element; // Remember value
     Node *ltemp = curr->next;   // Remember Node
     if (tail == curr->next)
@@ -101,7 +100,6 @@ public:
   }
 
   E &getValue() const { // Return current element
-
     return curr->next->element;
   }
 };
