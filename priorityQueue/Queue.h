@@ -44,7 +44,6 @@ E Queue::remove() {
 }
 
 void Queue::display() {
-
   if (empty())
     cout << "The queue is empty" << endl;
   else {

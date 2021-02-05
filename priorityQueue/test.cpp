@@ -1,31 +1,74 @@
 #include "IRQueue.h"
+#include "ORQueue.h"
 
-int main()
-{
-  IRQueue q;
-  cout << "Input restricted Queue\n";
+int main() {
+  E r;
+  {
+    IRQueue q;
 
-  cout << "Inserted: 100\n";
-  q.insert(100);
-  cout << "Inserted: 15\n";
-  q.insert(15);
-  cout << "Inserted: -27\n";
-  q.insert(-27);
-  cout << "Inserted: 445\n";
-  q.insert(445);
+    cout << "\nInitially: ";
+    q.display();
 
-  q.display();
+    cout << "\n\ninsert(100): ";
+    q.insert(100);
+    q.display();
 
-  cout << "Removed " << q.removeFront() << " from front\n";
+    cout << "\n\ninsert(15): ";
+    q.insert(15);
+    q.display();
 
-  q.display();
+    cout << "\n\ninsert(-27): ";
+    q.insert(-27);
+    q.display();
 
-  cout << "Removed " << q.removeBack() << " from back\n";
+    r = q.removeFront();
+    cout << "\n\nremoveFront(" << r << "): ";
+    q.display();
+    cout << " -> " << r;
 
-/*   ORQueue q;
-  cout << "Output restricted Queue\n";
-  
-  q.display();
- */
+    r = q.removeBack();
+    cout << "\n\nremoveBack(" << r << "): ";
+    q.display();
+    cout << " -> " << r;
+
+    q.clearAll();
+    cout << "\n\n";
+  }
+
+  {
+    ORQueue q;
+
+    cout << "\nInitially: ";
+    q.display();
+
+    cout << "\n\ninsertFront(100): ";
+    q.insertFront(100);
+    q.display();
+
+    cout << "\n\ninsertBack(15): ";
+    q.insertBack(15);
+    q.display();
+
+    cout << "\n\ninsertFront(-27): ";
+    q.insertFront(-27);
+    q.display();
+
+    r = q.remove();
+    cout << "\n\nremove(" << r << "): ";
+    q.display();
+    cout << " -> " << r;
+
+    r = q.remove();
+    cout << "\n\nremove(" << r << "): ";
+    q.display();
+    cout << " -> " << r;
+
+    q.clearAll();
+    cout << "\n\n";
+  }
+  /*   ORQueue q;
+    cout << "Output restricted Queue\n";
+
+    q.display();
+   */
 }
-

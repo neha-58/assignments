@@ -21,7 +21,7 @@ public:
   void clearAll();
 };
 
-IRQueue::IRQueue(int size) : LinkedList(0) { cout << "Input Restricted Queue is created" << endl; }
+IRQueue::IRQueue(int size) : LinkedList(0) { cout << "\nInput Restricted Queue is created.\n"; }
 
 bool IRQueue::empty() { return ((LinkedList::length() == 0) ? true : false); }
 
@@ -54,16 +54,16 @@ E IRQueue::removeBack() {
 void IRQueue::display() {
 
   if (empty())
-    cout << "The queue is empty" << endl;
+    cout << "{empty}";
   else {
-    cout << "The elements in the input restricted queue are :";
+    cout << "{ ";
     int length = size();
     LinkedList::moveToStart();
     for (int i = 1; i <= length; i++) {
       cout << LinkedList::getValue() << " ";
       LinkedList::next();
     }
-    cout << endl;
+    cout << '}';
   }
 }
 

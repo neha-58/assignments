@@ -21,7 +21,9 @@ public:
   void clearAll();
 };
 
-ORQueue::ORQueue(int size) : LinkedList(0) { cout << "Queue is created" << endl; }
+ORQueue::ORQueue(int size) : LinkedList(0) {
+  cout << "\nOutput Restricted Queue is created.\n";
+}
 
 bool ORQueue::empty() { return ((LinkedList::length() == 0) ? true : false); }
 
@@ -54,16 +56,16 @@ E ORQueue::remove() {
 void ORQueue::display() {
 
   if (empty())
-    cout << "The queue is empty" << endl;
+    cout << "{empty}";
   else {
-    cout << "The elements in the queue are :";
+    cout << "{ ";
     int length = size();
     LinkedList::moveToStart();
     for (int i = 1; i <= length; i++) {
       cout << LinkedList::getValue() << " ";
       LinkedList::next();
     }
-    cout << endl;
+    cout << '}';
   }
 }
 
