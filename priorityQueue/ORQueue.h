@@ -1,63 +1,57 @@
-#ifndef DEQUE_H_INCLUDED
-#define DEQUE_H_INCLUDED
+#ifndef OR_QUEUE_H_INCLUDED
+#define OR_QUEUE_H_INCLUDED
 
 #include <iostream>
 using namespace std;
 #include "LList.h"
 typedef int E;
 
-class Deque : private LinkedList {
+class ORQueue : private LinkedList {
 public:
-  Deque(int size = 0);
-  ~Deque(){};
+  ORQueue(int size = 0);
+  ~ORQueue(){};
   bool empty();
   E &front();
   E &back();
   int size();
   void insertFront(const E &thisElement);
   void insertBack(const E &thisElement);
-  E removeFront();
-  E removeBack();
+  E remove();
   void display();
   void clearAll();
 };
 
-Deque::Deque(int size) : LinkedList(0) { cout << "Queue is created" << endl; }
+ORQueue::ORQueue(int size) : LinkedList(0) { cout << "Queue is created" << endl; }
 
-bool Deque::empty() { return ((LinkedList::length() == 0) ? true : false); }
+bool ORQueue::empty() { return ((LinkedList::length() == 0) ? true : false); }
 
-E &Deque::front() {
+E &ORQueue::front() {
   LinkedList::moveToStart();
   return LinkedList::getValue();
 }
 
-E &Deque::back() {
+E &ORQueue::back() {
   LinkedList::moveToEnd();
   return LinkedList::getValue();
 }
 
-int Deque::size() { return LinkedList::length(); }
+int ORQueue::size() { return LinkedList::length(); }
 
-void Deque::insertFront(const E &thisElement) { // insertLeft ??
+void ORQueue::insertFront(const E &thisElement) { // insertLeft ??
   LinkedList::moveToStart();
   LinkedList::insert(thisElement);
 }
 
-void Deque::insertBack(const E &thisElement) {
+void ORQueue::insertBack(const E &thisElement) {
   LinkedList::append(thisElement);
 }
 
-E Deque::removeFront() {
+E ORQueue::remove() {
   LinkedList::moveToStart();
   return LinkedList::remove();
 }
 
-E Deque::removeBack() {
-  LinkedList::moveToEnd();
-  return LinkedList::remove();
-}
-
-void Deque::display() {
+void ORQueue::display() {
 
   if (empty())
     cout << "The queue is empty" << endl;
@@ -73,6 +67,6 @@ void Deque::display() {
   }
 }
 
-void Deque::clearAll() { LinkedList::clear(); }
+void ORQueue::clearAll() { LinkedList::clear(); }
 
-#endif // DEQUE_H_INCLUDED
+#endif // IR_QUEUE_H_INCLUDED
