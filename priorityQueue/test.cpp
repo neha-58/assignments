@@ -17,6 +17,9 @@ int main()
   q.display();
 
   cout << "Removed " << q.removeFront() << " from front\n";
+
+  q.display();
+
   cout << "Removed " << q.removeBack() << " from back\n";
 
 /*   ORQueue q;

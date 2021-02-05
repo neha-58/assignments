@@ -21,7 +21,7 @@ public:
   void clearAll();
 };
 
-IRQueue::IRQueue(int size) : LinkedList(0) { cout << "Queue is created" << endl; }
+IRQueue::IRQueue(int size) : LinkedList(0) { cout << "Input Restricted Queue is created" << endl; }
 
 bool IRQueue::empty() { return ((LinkedList::length() == 0) ? true : false); }
 
@@ -47,7 +47,7 @@ E IRQueue::removeFront() {
 }
 
 E IRQueue::removeBack() {
-  LinkedList::moveToEnd();
+  LinkedList::moveToPos(LinkedList::length() - 1);
   return LinkedList::remove();
 }
 

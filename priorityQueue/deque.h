@@ -53,7 +53,7 @@ E Deque::removeFront() {
 }
 
 E Deque::removeBack() {
-  LinkedList::moveToEnd();
+  LinkedList::moveToPos(LinkedList::length() - 1);
   return LinkedList::remove();
 }
 
