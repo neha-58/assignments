@@ -4,8 +4,8 @@
 using namespace std;
 #include "LList.h"
 typedef int E;
-class Queue : private LinkedList {
 
+class Queue : private LinkedList {
 public:
   Queue(int size = 0);
   ~Queue(){};
@@ -18,6 +18,7 @@ public:
   void display();
   void clearAll();
 };
+
 Queue::Queue(int size) : LinkedList(0) { cout << "Queue is created" << endl; }
 
 bool Queue::empty() { return ((LinkedList::length() == 0) ? true : false); }
@@ -26,16 +27,21 @@ E &Queue::front() {
   LinkedList::moveToStart();
   return LinkedList::getValue();
 }
+
 E &Queue::back() {
   LinkedList::moveToEnd();
   return LinkedList::getValue();
 }
+
 int Queue::size() { return LinkedList::length(); }
+
 void Queue::insert(const E &thisElement) { LinkedList::append(thisElement); }
+
 E Queue::remove() {
   LinkedList::moveToStart();
   return LinkedList::remove();
 }
+
 void Queue::display() {
 
   if (empty())
@@ -52,6 +58,7 @@ void Queue::display() {
     cout << endl;
   }
 }
+
 void Queue::clearAll() { LinkedList::clear(); }
 
 #endif // QUEUE_H_INCLUDED

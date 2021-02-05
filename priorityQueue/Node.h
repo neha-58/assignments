@@ -4,6 +4,7 @@
 using namespace std;
 
 typedef int E;
+
 class Node {
 public:
   E element;  // Value for this
