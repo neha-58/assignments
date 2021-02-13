@@ -4,8 +4,22 @@
 def transitive_closure(R):
     n = len(R)
     T = R.copy()
-    for k in range(1, n):
-        for i in range(1, n):
-            for j in range(1, n):
-                T[k][i][j] = T[k-1][i][j] or (T[k-1][i][k] and T[k-1][k][j])
+    for k in range(0, n):
+        t = []
+        for i in range(0, n):
+            t.append([])
+            for j in range(0, n):
+                t[i].append(T[i][j] or (T[i][k] and T[k][j]))
+                print(t[i])
+        del T
+        T = t
     return T
+
+
+R = [
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0]
+]
+
+print(transitive_closure(R))

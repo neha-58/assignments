@@ -20,8 +20,8 @@ def is_not_reflexive(X, R):  # to be verified
 
 def is_symmetric(X, R):
     n = len(X)
-    for i in range(0, n):
-        for j in range(0, i+1):
+    for i in range(1, n):
+        for j in range(0, i):
             if R[i][j] != R[j][i]:
                 return False
     return True
