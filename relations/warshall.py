@@ -10,15 +10,16 @@ def transitive_closure(R):
             t.append([])
             for j in range(0, n):
                 t[i].append(T[i][j] or (T[i][k] and T[k][j]))
-                print(t[i])
         del T
         T = t
     return T
 
 
+# drive
+
 R = [
-    [1, 0, 0],
     [0, 1, 0],
+    [0, 1, 1],
     [0, 0, 0]
 ]
 
