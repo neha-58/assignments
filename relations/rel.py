@@ -12,9 +12,10 @@ def is_irreflexive(X, R):
     return True
 
 
-def is_not_reflexive(X, R):  # to be verified
-    if not is_reflexive(X, R) and not is_irreflexive(X, R):
-        return True
+def is_not_reflexive(X, R):
+    for i in range(len(X)):
+        if R[i][i] == 0:
+            return True
     return False
 
 
@@ -37,7 +38,12 @@ def is_antisymmetric(X, R):
 
 
 def is_not_symmetric(X, R):
-    print()
+    n = len(X)
+    for i in range(1, n):
+        for j in range(0, i):
+            if R[i][j] != R[j][i]:
+                return True
+    return False
 
 
 def is_transitive(X, R):
@@ -76,12 +82,8 @@ def is_partial_order(X, R):
 
 X = {1, 2, 3}
 
-# R = {(1, 1), (2, 3), (1, 3)}
-
 R = [
-    [1, 0, 0],
     [0, 1, 0],
-    [0, 0, 0]
+    [1, 1, 1],
+    [0, 1, 0]
 ]
-
-print(is_equivalence(X, R))
